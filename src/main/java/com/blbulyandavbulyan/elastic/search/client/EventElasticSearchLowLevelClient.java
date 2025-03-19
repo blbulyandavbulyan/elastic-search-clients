@@ -2,6 +2,9 @@ package com.blbulyandavbulyan.elastic.search.client;
 
 import com.blbulyandavbulyan.elastic.search.config.ElasticSearchIndexProperties;
 import com.blbulyandavbulyan.elastic.search.model.Event;
+import com.blbulyandavbulyan.elastic.search.service.resource.ElasticSearchRequest;
+import com.blbulyandavbulyan.elastic.search.service.resource.ElasticSearchRequestTemplate;
+import com.blbulyandavbulyan.elastic.search.service.resource.ResourceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,11 +24,13 @@ public class EventElasticSearchLowLevelClient implements EventElasticSearchClien
     private final RestClient restClient;
     private final ElasticSearchIndexProperties elasticSearchIndexProperties;
     private final ObjectMapper objectMapper;
+    private final ResourceService resourceService;
 
     @Override
     public void createIndex() {
         restClient.put()
                 .uri(uriBuilder -> uriBuilder.pathSegment(elasticSearchIndexProperties.getName()).build())
+                .body(resourceService.loadResource(ElasticSearchRequest.CREATE_EVENTS_INDEX))
                 .retrieve();
     }
 
@@ -39,7 +44,7 @@ public class EventElasticSearchLowLevelClient implements EventElasticSearchClien
     @Override
     public void save(Event object) {
         restClient.post()
-                .uri("/{indexName}", elasticSearchIndexProperties.getName())
+                .uri("/{indexName}/_doc", elasticSearchIndexProperties.getName())
                 .body(object)
                 .retrieve();
     }
@@ -58,68 +63,28 @@ public class EventElasticSearchLowLevelClient implements EventElasticSearchClien
 
     @Override
     public List<Event> findAll() {
-        return searchEvents("""
-                        {
-                          "query": {
-                            "match_all": {}
-                          }
-                        }
-                        """);
+        return searchEvents(resourceService.loadResource(ElasticSearchRequest.FIND_ALL));
     }
 
     @Override
     @SneakyThrows
     public List<Event> findByEventType(Event.Type type) {
-        return searchEvents("""
-                        {
-                          "query": {
-                            "term": {
-                              "eventType.keyword": {
-                                "value": %s
-                              }
-                            }
-                          }
-                        }
-                        """.formatted(objectMapper.writeValueAsString(type)));
+        return searchEvents(resourceService.loadResource(ElasticSearchRequestTemplate.FIND_BY_EVENT_TYPE)
+                .formatted(objectMapper.writeValueAsString(type)));
     }
 
     @Override
     @SneakyThrows
     public List<Event> findByTitle(String title) {
-        return searchEvents("""
-                {
-                  "query": {
-                    "match": {
-                      "title": %s
-                    }
-                  }
-                }
-                """.formatted(objectMapper.writeValueAsString(title)));
+        return searchEvents(resourceService.loadResource(ElasticSearchRequestTemplate.FIND_BY_TITLE)
+                .formatted(objectMapper.writeValueAsString(title)));
     }
 
     @Override
     @SneakyThrows
     public List<Event> findByTitleAfterDateTime(String title, ZonedDateTime dateTime) {
-        return searchEvents("""
-                {
-                  "query": {
-                    "bool": {
-                      "must": [
-                        {"match": {
-                          "title": %s
-                        }}
-                      ],
-                      "filter": [
-                        {"range": {
-                          "dateTime": {
-                            "gt": %s
-                          }
-                        }}
-                      ]
-                    }
-                  }
-                }
-                """.formatted(objectMapper.writeValueAsString(title),
+        return searchEvents(resourceService.loadResource(ElasticSearchRequestTemplate.FIND_BY_TITLE_AFTER_DATE)
+                .formatted(objectMapper.writeValueAsString(title),
                 objectMapper.writeValueAsString(dateTime)));
     }
 }

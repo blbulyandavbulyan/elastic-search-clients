@@ -1,4 +1,4 @@
-package com.blbulyandavbulyan.elastic.search.service;
+package com.blbulyandavbulyan.elastic.search.service.resource;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String resourcePath) {

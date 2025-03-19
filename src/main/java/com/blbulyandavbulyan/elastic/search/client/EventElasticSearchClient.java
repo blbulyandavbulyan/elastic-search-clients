@@ -10,7 +10,7 @@ public interface EventElasticSearchClient {
 
     void applyMapping(Mapping mapping);
 
-    void save(Event object);
+    void save(Event event);
 
     List<Event> findAll();
 

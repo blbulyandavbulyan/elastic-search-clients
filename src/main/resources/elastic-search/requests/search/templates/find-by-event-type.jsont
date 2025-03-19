@@ -1,0 +1,9 @@
+{
+  "query": {
+    "term": {
+      "eventType.keyword": {
+        "value": %s
+      }
+    }
+  }
+}

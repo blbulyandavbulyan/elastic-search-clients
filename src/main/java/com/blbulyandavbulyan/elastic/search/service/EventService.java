@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EventSearchService {
+public class EventService {
     private final EventElasticSearchClient eventElasticSearchClient;
 
     public List<Event> searchEvents(EventQuery eventQuery) {
@@ -23,5 +23,9 @@ public class EventSearchService {
         } else {
             return eventElasticSearchClient.findAll();
         }
+    }
+
+    public void save(Event event) {
+        eventElasticSearchClient.save(event);
     }
 }
