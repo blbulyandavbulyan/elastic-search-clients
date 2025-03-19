@@ -13,7 +13,7 @@ public record Event(String title,
                     List<String> subTopics) {
 
     @SuppressWarnings("unused") // used by Jackson deserializer
-    public enum Type{
+    public enum Type {
         @JsonProperty("workshop")
         WORKSHOP,
         @JsonProperty("tech-talk")
