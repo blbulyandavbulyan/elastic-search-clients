@@ -2,15 +2,17 @@ package com.blbulyandavbulyan.elastic.search.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 public record Event(String title,
                     Type eventType,
-                    ZonedDateTime dateTime,
+                    LocalDateTime dateTime,
                     String place, String description,
-                    List<String> subtopics) {
+                    List<String> subTopics) {
+
+    @SuppressWarnings("unused") // used by Jackson deserializer
     public enum Type{
         @JsonProperty("workshop")
         WORKSHOP,

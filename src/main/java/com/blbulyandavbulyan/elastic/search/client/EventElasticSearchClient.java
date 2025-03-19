@@ -2,6 +2,7 @@ package com.blbulyandavbulyan.elastic.search.client;
 
 import com.blbulyandavbulyan.elastic.search.model.Event;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface EventElasticSearchClient {
 
     List<Event> findByTitle(String title);
 
-    List<Event> findByTitleAfterDateTime(String title, ZonedDateTime dateTime);
+    List<Event> findByTitleAfterDateTime(String title, LocalDateTime dateTime);
 }

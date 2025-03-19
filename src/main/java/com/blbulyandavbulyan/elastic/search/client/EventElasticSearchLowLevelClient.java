@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +82,7 @@ public class EventElasticSearchLowLevelClient implements EventElasticSearchClien
 
     @Override
     @SneakyThrows
-    public List<Event> findByTitleAfterDateTime(String title, ZonedDateTime dateTime) {
+    public List<Event> findByTitleAfterDateTime(String title, LocalDateTime dateTime) {
         return searchEvents(resourceService.loadResource(ElasticSearchRequestTemplate.FIND_BY_TITLE_AFTER_DATE)
                 .formatted(objectMapper.writeValueAsString(title),
                 objectMapper.writeValueAsString(dateTime)));
